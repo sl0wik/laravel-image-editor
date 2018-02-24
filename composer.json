@@ -1,5 +1,5 @@
 {
-    "name": "sl0wik/laravel-images-editor",
+    "name": "sl0wik/laravel-image-editor",
     "description": "Simple images editor for Laravel.",
     "keywords": ["laravel", "image", "editor"],
     "license": "MIT",
