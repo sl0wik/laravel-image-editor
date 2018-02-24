@@ -1,0 +1,23 @@
+{
+    "name": "sl0wik/laravel-images-editor",
+    "description": "Simple images editor for Laravel.",
+    "keywords": ["template", "composer", "package"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Slowik"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=5.4"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "5.2.*"
+    },
+	"autoload": {
+        "psr-4": {
+            "Sl0wik\\LaravelImageEditor\\": "src/"
+        }
+    }
+}
