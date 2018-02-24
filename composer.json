@@ -19,5 +19,12 @@
         "psr-4": {
             "Sl0wik\\LaravelImageEditor\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sl0wik\\LaravelImageEditor\\ImageEditorServiceProvider"
+            ]
+        }
     }
 }
