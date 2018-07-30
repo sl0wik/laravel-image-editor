@@ -10,7 +10,7 @@ trait ImageCache
     protected $cache_disk = 'local';
 
     /** @var string Image extension used in cache. */
-    protected $cache_extension = 'jpg';
+    protected $cache_extension = null;
 
     /* getCacheID should generate unique id like "gallery/33" */
     abstract public function getCacheID();
@@ -22,6 +22,22 @@ trait ImageCache
             return false;
         }
         return true;
+    }
+
+    /**
+     * Get/set cache extension.
+     *
+     * @return string|self
+     */
+    public function cacheExtension($extension = null)
+    {
+        if (empty($extension)) {
+            return $this->cache_extension;
+        }
+
+        $this->cache_extension = $extension;
+
+        return $this;
     }
 
     /**
@@ -108,6 +124,10 @@ trait ImageCache
      */
     public function generateCacheFilePath($fileID, $add_parameters = false)
     {
+        if (empty($this->cache_extension)) {
+            $this->cache_extension = config('images.cache_extension');
+        }
+
         /* To do: fileID should be better secured */
         $fileID = str_replace('.', '', $fileID);
 
@@ -122,7 +142,7 @@ trait ImageCache
         }
         $path = config('images.cache_path');
         $path .= "images/{$fileID}/".implode('-', $parameters);
-        $path .= '.'.config('images.cache_extension');
+        $path .= '.'.$this->cache_extension;
         return $path;
     }
 
