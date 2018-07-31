@@ -137,7 +137,7 @@ trait ImageCache
                 $parameters[] = $this->size();
             }
             if ($this->watermarkPath()) {
-                $parameters[] = "w";
+                $parameters[] = "w-".md5($this->watermarkPath());
             }
         }
         $path = config('images.cache_path');
