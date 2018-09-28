@@ -60,9 +60,9 @@ trait ImageEditor
     public function resizeXorY($x, $y)
     {
         if ($x > $y) {
-            $this->resizeX($this->handle(), $x);
+            $this->resizeX($x);
         } else {
-            $this->resizeY($this->handle(), $y);
+            $this->resizeY($y);
         }
     }
 
