@@ -1,8 +1,8 @@
 <?php
+
 namespace Sl0wik\LaravelImageEditor\Traits;
 
 use Storage;
-use Response;
 
 trait ImageCache
 {
@@ -21,6 +21,7 @@ trait ImageCache
         if (request('nocache')) {
             return false;
         }
+
         return true;
     }
 
@@ -62,6 +63,7 @@ trait ImageCache
      * Save image to cache.
      *
      * @param \Intervention\Image\Facades\Image $handle Image handle
+     *
      * @return void
      */
     public function cache($handle)
@@ -85,6 +87,7 @@ trait ImageCache
         if (!$this->isCached($fileID)) {
             $this->saveOriginalImageToCache($fileID);
         }
+
         return $this->makeImage(
             $this->storagePath(
                 $this->generateCacheFilePath($fileID)
@@ -96,6 +99,7 @@ trait ImageCache
      * Save original image to cache.
      *
      * @param string $fileID Unique file id
+     *
      * @return void
      */
     public function saveOriginalImageToCache($fileID)
@@ -106,7 +110,7 @@ trait ImageCache
     /**
      * Check if file exists in cache.
      *
-     * @return boolean
+     * @return bool
      */
     public function isCached($fileID)
     {
@@ -118,8 +122,9 @@ trait ImageCache
     /**
      * Generate path to cache file.
      *
-     * @param string $fileID Unique file id
-     * @param bool $add_parameters Should cache file include parameters (if not its original file)
+     * @param string $fileID         Unique file id
+     * @param bool   $add_parameters Should cache file include parameters (if not its original file)
+     *
      * @return string Parth to cache file
      */
     public function generateCacheFilePath($fileID, $add_parameters = false)
@@ -137,12 +142,13 @@ trait ImageCache
                 $parameters[] = $this->size();
             }
             if ($this->watermarkPath()) {
-                $parameters[] = "w-".md5($this->watermarkPath());
+                $parameters[] = 'w-'.md5($this->watermarkPath());
             }
         }
         $path = config('images.cache_path');
         $path .= "images/{$fileID}/".implode('-', $parameters);
         $path .= '.'.$this->cache_extension;
+
         return $path;
     }
 
@@ -150,6 +156,7 @@ trait ImageCache
      * Return storage path.
      *
      * @param string $path Path to image
+     *
      * @return string Path with storage path
      */
     public function storagePath($path)

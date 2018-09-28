@@ -1,7 +1,7 @@
 <?php
+
 namespace Sl0wik\LaravelImageEditor\Traits;
 
-use Storage;
 use Response;
 
 trait ImageEditor
@@ -15,7 +15,8 @@ trait ImageEditor
     /**
      * Resize image to specific width.
      *
-     * @param integer $x Image width in px
+     * @param int $x Image width in px
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function resizeX($x)
@@ -28,7 +29,8 @@ trait ImageEditor
     /**
      * Resize image to specific height.
      *
-     * @param integer $y Image height in px
+     * @param int $y Image height in px
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function resizeY($y)
@@ -41,8 +43,9 @@ trait ImageEditor
     /**
      * Resize image to fit specific resolution.
      *
-     * @param integer $x Width in px
-     * @param integer $y Height in px
+     * @param int $x Width in px
+     * @param int $y Height in px
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function resizeXY($x, $y)
@@ -53,8 +56,9 @@ trait ImageEditor
     /**
      * Resize image to, whats greater width or height.
      *
-     * @param integer $x Width in px
-     * @param integer $y Height in px
+     * @param int $x Width in px
+     * @param int $y Height in px
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function resizeXorY($x, $y)
@@ -70,6 +74,7 @@ trait ImageEditor
      * Check if extension is allowed. If yes return extension.
      *
      * @param type $extension File extension
+     *
      * @return extension|abort
      */
     public function checkExtension($extension)
@@ -85,6 +90,7 @@ trait ImageEditor
      * Set or get extension.
      *
      * @param string $extension File extension
+     *
      * @return string|this File extension
      */
     public function extension($extension = null)
@@ -98,6 +104,7 @@ trait ImageEditor
             }
         }
         $this->extension = $this->checkExtension($extension);
+
         return $this;
     }
 
@@ -105,6 +112,7 @@ trait ImageEditor
      * Set file size (resolution), that will be applied on save.
      *
      * @param string|null $size File size ex 800x600
+     *
      * @return this
      */
     public function size($size = null)
@@ -114,15 +122,15 @@ trait ImageEditor
             if (isset($this->size_attribute)) {
                 return $this->size_attribute;
             } else {
-                return null;
+                return;
             }
         }
         $size = $this->parseSize($size)->raw;
         $this->size_attribute = $size;
         $this->todo('resize');
+
         return $this;
     }
-
 
     /**
      * Resize image.
@@ -135,6 +143,7 @@ trait ImageEditor
      * If parameter is null size will come from $this->size()
      *
      * @param string|null $size Size string ex.: x100,y100,800x600,800o600
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function resize($size = null)
@@ -160,6 +169,7 @@ trait ImageEditor
                 abort(403, 'Undefined resize method.');
                 break;
         }
+
         return $this;
     }
 
@@ -173,6 +183,7 @@ trait ImageEditor
      * {x}o{y} (portrait or horizontal)
      *
      * @param type $size Size, for example x100, y100, 800x600, 800o600
+     *
      * @return type
      */
     public function parseSize($size)
@@ -180,29 +191,29 @@ trait ImageEditor
         if (ctype_alnum($size)) {
             if (preg_match('/^([0-9]{1,4})x([0-9]{1,4})$/', $size, $output)) {
                 return (object) [
-                    'raw' => $output[0],
+                    'raw'    => $output[0],
                     'method' => '{x}x{y}',
-                    'x' => intval($output[1]),
-                    'y' => intval($output[2]),
+                    'x'      => intval($output[1]),
+                    'y'      => intval($output[2]),
                 ];
             } elseif (preg_match('/^([0-9]{1,4})o([0-9]{1,4})$/', $size, $output)) {
                 return (object) [
-                    'raw' => $output[0],
+                    'raw'    => $output[0],
                     'method' => '{x}o{y}',
-                    'x' => intval($output[1]),
-                    'y' => intval($output[2]),
+                    'x'      => intval($output[1]),
+                    'y'      => intval($output[2]),
                 ];
             } elseif (preg_match('/^x([0-9]{1,4})$/', $size, $output)) {
                 return (object) [
-                    'raw' => $output[0],
+                    'raw'    => $output[0],
                     'method' => 'x{x}',
-                    'x' => intval($output[1]),
+                    'x'      => intval($output[1]),
                 ];
             } elseif (preg_match('/^y([0-9]{1,4})$/', $size, $output)) {
                 return (object) [
-                    'raw' => $output[0],
+                    'raw'    => $output[0],
                     'method' => 'y{y}',
-                    'y' => intval($output[1]),
+                    'y'      => intval($output[1]),
                 ];
             } else {
                 dd('Illegal size. Supported: {x}x{y},{x}o{y},x{x},y{y}');
@@ -256,6 +267,7 @@ trait ImageEditor
      * Set or get watermark path.
      *
      * @param string|null $path File path or null
+     *
      * @return this|string
      */
     public function watermarkPath($path = null)
@@ -264,7 +276,8 @@ trait ImageEditor
             if (isset($this->watermark_path)) {
                 return $this->watermark_path;
             }
-            return null;
+
+            return;
         }
         $this->watermark_path = $path;
     }
@@ -273,6 +286,7 @@ trait ImageEditor
      * Include watermark in thumbnail.
      *
      * @param type|null $path Path to watermark
+     *
      * @return this
      */
     public function watermark($path = null)
@@ -282,16 +296,18 @@ trait ImageEditor
         }
         $this->watermarkPath($path);
         $this->todo('watermark');
+
         return $this;
     }
 
     /**
      * This function calculate what should be the thumbnail size.
      *
-     * @param string $width Width in %
-     * @param string $height Height in %
+     * @param string                            $width     Width in %
+     * @param string                            $height    Height in %
      * @param \Intervention\Image\Facades\Image $watermark Handle to watermark
-     * @param \Intervention\Image\Facades\Image $handle Handle to image
+     * @param \Intervention\Image\Facades\Image $handle    Handle to image
+     *
      * @return object Object with width and height
      */
     public function calculateWatermarkResolution($width, $height, $watermark, $handle)
@@ -302,9 +318,9 @@ trait ImageEditor
         $width_px = (int) round($handle->width() * $width);
         $height_px = (int) round($handle->height() * $height);
 
-        return (object)[
-            'width' => $width_px,
-            'height' => $height_px
+        return (object) [
+            'width'  => $width_px,
+            'height' => $height_px,
         ];
     }
 
@@ -312,6 +328,7 @@ trait ImageEditor
      * Add watermark to image. Opacity should be set in watermark file.
      *
      * @param string $watermark_path Path to watermark image file
+     *
      * @return this
      */
     public function addWatermark($watermark_path = null)
@@ -343,6 +360,7 @@ trait ImageEditor
      * Make image.intervention.io image object.
      *
      * @param string $image According to make() from image.intervention.io
+     *
      * @return \Intervention\Image\Facades\Image
      */
     public function makeImage($image)
@@ -363,6 +381,7 @@ trait ImageEditor
         if (isset($this->handle_attribute)) {
             return $this->handle_attribute;
         }
+
         return $this->handle($this->loadImageHandle());
     }
 
@@ -383,8 +402,9 @@ trait ImageEditor
     /**
      * Generate laravel response.
      *
-     * @param type $path File path
+     * @param type   $path      File path
      * @param string $extension Extension, jpg by default
+     *
      * @return response
      */
     public function response($extension = null)
@@ -398,12 +418,14 @@ trait ImageEditor
                 $this->cache($this->handle());
             }
             $age = config('images.cache_age', '86400');
+
             return $this->cached()
                         ->response($extension)
-                        ->setLastModified(new \DateTime("now"))
-                        ->setExpires(new \DateTime("@".(time() + $age)));
+                        ->setLastModified(new \DateTime('now'))
+                        ->setExpires(new \DateTime('@'.(time() + $age)));
         }
         $this->apply();
+
         return $this->handle()->response($extension);
     }
 }
